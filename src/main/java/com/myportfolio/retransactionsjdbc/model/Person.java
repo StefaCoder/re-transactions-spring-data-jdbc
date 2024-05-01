@@ -1,6 +1,7 @@
 package com.myportfolio.retransactionsjdbc.model;
 
 public class Person {
+
     private int personID;
     private String personName;
     private String personAccountNumber;
