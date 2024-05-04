@@ -1,54 +1,66 @@
 package com.myportfolio.retransactionsjdbc.model;
 
+import java.math.BigDecimal;
+
 public class Person {
 
-    private int personID;
-    private String personName;
-    private String personAccountNumber;
-    private String personContactInfo;
+    private int person_id;
+    private String person_name;
+    private String person_account_number;
+    private String person_contact_info;
     private String role;
+    private BigDecimal balance;
 
     public Person() {
     }
 
-    public Person(int personID, String personName, String personAccountNumber, String personContactInfo, String role) {
-        this.personID = personID;
-        this.personName = personName;
-        this.personAccountNumber = personAccountNumber;
-        this.personContactInfo = personContactInfo;
+    public Person(String person_name, String person_account_number, String person_contact_info, String role, BigDecimal balance) {
+        this.person_name = person_name;
+        this.person_account_number = person_account_number;
+        this.person_contact_info = person_contact_info;
         this.role = role;
+        this.balance = balance;
     }
 
-    public int getPersonID() {
-        return personID;
+    public Person(int person_id, String person_name, String person_account_number, String person_contact_info, String role, BigDecimal balance) {
+        this.person_id = person_id;
+        this.person_name = person_name;
+        this.person_account_number = person_account_number;
+        this.person_contact_info = person_contact_info;
+        this.role = role;
+        this.balance = balance;
     }
 
-    public void setPersonID(int personID) {
-        this.personID = personID;
+    public int getPerson_id() {
+        return person_id;
     }
 
-    public String getPersonName() {
-        return personName;
+    public void setPerson_id(int person_id) {
+        this.person_id = person_id;
     }
 
-    public void setPersonName(String personName) {
-        this.personName = personName;
+    public String getPerson_name() {
+        return person_name;
     }
 
-    public String getPersonAccountNumber() {
-        return personAccountNumber;
+    public void setPerson_name(String person_name) {
+        this.person_name = person_name;
     }
 
-    public void setPersonAccountNumber(String personAccountNumber) {
-        this.personAccountNumber = personAccountNumber;
+    public String getPerson_account_number() {
+        return person_account_number;
     }
 
-    public String getPersonContactInfo() {
-        return personContactInfo;
+    public void setPerson_account_number(String person_account_number) {
+        this.person_account_number = person_account_number;
     }
 
-    public void setPersonContactInfo(String personContactInfo) {
-        this.personContactInfo = personContactInfo;
+    public String getPerson_contact_info() {
+        return person_contact_info;
+    }
+
+    public void setPerson_contact_info(String person_contact_info) {
+        this.person_contact_info = person_contact_info;
     }
 
     public String getRole() {
@@ -59,14 +71,23 @@ public class Person {
         this.role = role;
     }
 
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
+
     @Override
     public String toString() {
         return "Person{" +
-                "personID=" + personID +
-                ", personName='" + personName + '\'' +
-                ", personAccountNumber='" + personAccountNumber + '\'' +
-                ", personContactInfo='" + personContactInfo + '\'' +
+                "person_id=" + person_id +
+                ", person_name='" + person_name + '\'' +
+                ", person_account_number='" + person_account_number + '\'' +
+                ", person_contact_info='" + person_contact_info + '\'' +
                 ", role='" + role + '\'' +
+                ", balance=" + balance +
                 '}';
     }
 }
