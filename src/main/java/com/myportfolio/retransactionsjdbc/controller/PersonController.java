@@ -26,6 +26,21 @@ public class PersonController {
         }
     }
 
+    @PutMapping("/person/update/{id}")
+    public ResponseEntity<String> updatePersonById(@PathVariable("id") int personID, @RequestBody Person person){
+        Person personObj = personRepository.findPersonById(personID);
+
+        if (personObj != null) {
+            personObj.setRole(person.getRole());
+            personObj.setBalance(person.getBalance());
+
+            personRepository.updatePerson(personObj);
+            return new ResponseEntity<>("Person successfully updated.", HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>("Person with id " + personID + " not found.", HttpStatus.NOT_FOUND);
+        }
+    }
+
     @GetMapping("/person/{id}")
     public ResponseEntity<Person> getPersonById(@PathVariable("id") int personID){
         Person personObj = personRepository.findPersonById(personID);

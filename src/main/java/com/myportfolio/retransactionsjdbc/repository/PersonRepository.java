@@ -8,6 +8,8 @@ public interface PersonRepository {
 
     int savePerson(Person person);
 
+    int updatePerson(Person person);
+
     Person findPersonById(int personID);
 
     Person findPersonByAccountNumber(String accountNumber);

@@ -43,6 +43,22 @@ public class JdbcPersonRepository implements PersonRepository{
     }
 
     @Override
+    public int updatePerson(Person person) {
+        try {
+            String sql = "UPDATE Person SET role=?, balance=? WHERE person_id=?";
+            String role = person.getRole();
+
+            if (!"BUYER".equals(role) && !"SELLER".equals(role)){
+                throw new IllegalArgumentException("Invalid role provided: " + role);
+            }
+
+            return jdbcTemplate.update(sql, role, person.getBalance(), person.getPerson_id());
+        }catch (DataAccessException dae) {
+            throw dae;
+        }
+    }
+
+    @Override
     public Person findPersonById(int personID) {
         String sql = "SELECT * FROM Person WHERE person_id=?";
 
