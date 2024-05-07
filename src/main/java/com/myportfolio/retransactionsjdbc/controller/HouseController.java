@@ -51,7 +51,7 @@ public class HouseController {
         try {
             int response = houseRepository.deleteHouseById(houseID);
             if (response == 0){
-                return new ResponseEntity<>("No House with id " + houseID + " found.", HttpStatus.OK);
+                return new ResponseEntity<>("No House with id " + houseID + " found.", HttpStatus.NOT_FOUND);
             }else {
                 return new ResponseEntity<>("House with id " + houseID + " successfully removed.", HttpStatus.OK);
             }
