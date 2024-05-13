@@ -1,6 +1,11 @@
 package com.myportfolio.retransactionsjdbc.controller;
 
+import com.myportfolio.retransactionsjdbc.model.House;
+import com.myportfolio.retransactionsjdbc.model.Person;
 import com.myportfolio.retransactionsjdbc.model.Transactions;
+import com.myportfolio.retransactionsjdbc.repository.HouseRepository;
+import com.myportfolio.retransactionsjdbc.repository.JdbcTransactionsRepository;
+import com.myportfolio.retransactionsjdbc.repository.PersonRepository;
 import com.myportfolio.retransactionsjdbc.repository.TransactionsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +21,15 @@ public class TransactionsController {
     @Autowired
     TransactionsRepository transactionsRepository;
 
+    @Autowired
+    PersonRepository personRepository;
+
+    @Autowired
+    HouseRepository houseRepository;
+
+    @Autowired
+    JdbcTransactionsRepository jdbcTransactionsRepository;
+
     @PostMapping("/transactions")
     public ResponseEntity<String> createTransaction(@RequestBody Transactions transactions){
         try {
@@ -24,6 +38,23 @@ public class TransactionsController {
         }catch (Exception e){
             System.out.println("Something went wrong while creating a transactions. " + e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/transactions/all")
+    public ResponseEntity<List<Transactions>> getAllTransactions(){
+        try {
+            List<Transactions> allTransactions = transactionsRepository.findAllTransactions();
+            if (allTransactions != null){
+                System.out.println("Transactions retrieved successfully.");
+                return new ResponseEntity<>(allTransactions, HttpStatus.OK);
+            }else {
+                System.out.println("Cannot find transactions.");
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+        }catch (Exception e){
+            System.out.println("Something went wrong while retrieving transactions. " + e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -105,6 +136,22 @@ public class TransactionsController {
         }catch (Exception e){
             System.out.println("Something went wrong while deleting transactions by id." + e.getMessage());
             return new ResponseEntity<>("Error while deleting transaction.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/transactions/ownership")
+    public ResponseEntity<String> createTransferOwnership(@RequestBody Transactions transactions){
+        try {
+            Person buyer = personRepository.findPersonById(transactions.getBuyer_id());
+            Person seller = personRepository.findPersonById(transactions.getSeller_id());
+            House house = houseRepository.findHouseById(transactions.getHouse_id());
+
+            jdbcTransactionsRepository.transferHouseOwnership(transactions, buyer, seller, house);
+            transactionsRepository.saveTransaction(transactions);
+            return new ResponseEntity<>("Ownership successfully transferred.", HttpStatus.CREATED);
+        }catch (Exception e){
+            System.out.println("Something went wrong while transferring ownership. " + e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

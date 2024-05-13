@@ -79,6 +79,18 @@ public class Person {
         this.balance = balance;
     }
 
+    public void withdrawAmount(BigDecimal amount){
+        if (getBalance().compareTo(amount) < 0){
+            throw new IllegalArgumentException("Insufficient funds.");
+        }
+        balance = balance.subtract(amount);
+    }
+
+    public void depositAmount(BigDecimal amount){
+
+        balance = balance.add(amount);
+    }
+
     @Override
     public String toString() {
         return "Person{" +

@@ -1,5 +1,7 @@
 package com.myportfolio.retransactionsjdbc.repository;
 
+import com.myportfolio.retransactionsjdbc.model.House;
+import com.myportfolio.retransactionsjdbc.model.Person;
 import com.myportfolio.retransactionsjdbc.model.Transactions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -8,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,6 +19,12 @@ public class JdbcTransactionsRepository implements TransactionsRepository{
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    PersonRepository personRepository;
+
+    @Autowired
+    HouseRepository houseRepository;
 
     @Override
     public int saveTransaction(Transactions transactions) {
@@ -33,6 +42,17 @@ public class JdbcTransactionsRepository implements TransactionsRepository{
             return jdbcTemplate.update(sql, transactions.getHouse_id(), transactions.getBuyer_id(), transactions.getSeller_id(), transactions.getTransaction_date(), transactions.getTransaction_amount());
         }catch (DataAccessException dae){
             throw dae;
+        }
+    }
+
+    @Override
+    public List<Transactions> findAllTransactions() {
+        try {
+            String sql = "SELECT * FROM Transactions";
+
+            return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Transactions.class));
+        }catch (DataAccessException dae){
+            return Collections.emptyList();
         }
     }
 
@@ -104,5 +124,29 @@ public class JdbcTransactionsRepository implements TransactionsRepository{
         }catch (DataAccessException dae){
             return 0;
         }
+    }
+
+    public void transferHouseOwnership(Transactions transactions, Person buyer, Person seller, House house){
+        if (!"BUYER".equals(buyer.getRole()) || !"SELLER".equals(seller.getRole())){
+            throw new IllegalArgumentException("A buyer must have 'BUYER' role and a seller 'SELLER' role");
+        }
+        if (buyer.getPerson_account_number() == null || seller.getPerson_account_number() == null){
+            throw new IllegalArgumentException("Buyer and Seller must have an account number.");
+        }
+        if (seller.getPerson_id() != house.getSeller_id()){
+            throw new IllegalArgumentException("Person id " + seller.getPerson_id() + " doesn't own the house located at " + house.getHouse_address() + ". Transaction failed.");
+        }
+
+        transactions.transactionRecord(buyer, seller, house);
+
+        buyer.setRole("SELLER");
+        seller.setRole("BUYER");
+        transactions.setTransaction_date(LocalDate.now());
+        transactions.setTransaction_amount(house.getHouse_price());
+
+        personRepository.updatePerson(buyer);
+        personRepository.updatePerson(seller);
+        house.setSeller_id(buyer.getPerson_id());
+        houseRepository.updateHouse(house);
     }
 }

@@ -33,6 +33,17 @@ public class JdbcHouseRepository implements HouseRepository{
     }
 
     @Override
+    public int updateHouse(House house) {
+        try {
+            String sql = "UPDATE House SET house_address=?, house_price=?, seller_id=? WHERE house_id=?";
+
+            return jdbcTemplate.update(sql, house.getHouse_address(), house.getHouse_price(), house.getSeller_id(), house.getHouse_id());
+        }catch (DataAccessException dae) {
+            throw dae;
+        }
+    }
+
+    @Override
     public House findHouseById(int houseID) {
         try {
             String sql = "SELECT * FROM House WHERE house_id=?";

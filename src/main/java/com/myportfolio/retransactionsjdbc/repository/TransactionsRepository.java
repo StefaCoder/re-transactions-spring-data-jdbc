@@ -8,6 +8,8 @@ public interface TransactionsRepository {
 
     int saveTransaction(Transactions transactions);
 
+    List<Transactions> findAllTransactions();
+
     Transactions findTransactionById(int transactionID);
 
     List<Transactions> findTransactionByHouseId(int houseID);

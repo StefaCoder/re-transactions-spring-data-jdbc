@@ -24,6 +24,22 @@ public class HouseController {
         }
     }
 
+    @PutMapping("/house/update/{id}")
+    public ResponseEntity<String> updateHouseById(@PathVariable("id") int houseID, @RequestBody House house){
+        House houseObj = houseRepository.findHouseById(houseID);
+
+        if (houseObj != null) {
+            houseObj.setHouse_address(house.getHouse_address());
+            houseObj.setHouse_price(house.getHouse_price());
+            houseObj.setSeller_id(house.getSeller_id());
+
+            houseRepository.updateHouse(houseObj);
+            return new ResponseEntity<>("House successfully updated.", HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>("House with id " + houseID + " not found.", HttpStatus.NOT_FOUND);
+        }
+    }
+
     @GetMapping("/house/{id}")
     public ResponseEntity<House> getHouseById(@PathVariable("id") int houseID){
         House houseObj = houseRepository.findHouseById(houseID);

@@ -80,6 +80,18 @@ public class Transactions {
         this.transaction_amount = transaction_amount;
     }
 
+    public void transactionRecord(Person buyer, Person seller, House house){
+        Transactions transactions = new Transactions();
+        transactions.setHouse_id(house.getHouse_id());
+        transactions.setBuyer_id(buyer.getPerson_id());
+        transactions.setSeller_id(house.getSeller_id());
+        transactions.setTransaction_date(LocalDate.now());
+        transactions.setTransaction_amount(house.getHouse_price());
+
+        buyer.withdrawAmount(house.getHouse_price());
+        seller.depositAmount(house.getHouse_price());
+    }
+
     @Override
     public String toString() {
         return "Transactions{" +

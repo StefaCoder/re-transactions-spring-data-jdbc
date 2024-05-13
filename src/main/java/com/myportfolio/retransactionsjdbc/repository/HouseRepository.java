@@ -6,6 +6,8 @@ public interface HouseRepository {
 
     int saveHouse(House house);
 
+    int updateHouse(House house);
+
     House findHouseById(int houseID);
 
     House findHouseByAddress(String houseAddress);
