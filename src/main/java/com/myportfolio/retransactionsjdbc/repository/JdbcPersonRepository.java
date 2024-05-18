@@ -100,7 +100,7 @@ public class JdbcPersonRepository implements PersonRepository{
         try {
             return jdbcTemplate.update(sql, personID);
         }catch (DataAccessException dae) {
-            return 0;
+            throw dae;
         }
     }
 
@@ -110,8 +110,7 @@ public class JdbcPersonRepository implements PersonRepository{
         try {
             return jdbcTemplate.update(sql);
         }catch (DataAccessException dae){
-            return 0;
+            throw dae;
         }
-
     }
 }

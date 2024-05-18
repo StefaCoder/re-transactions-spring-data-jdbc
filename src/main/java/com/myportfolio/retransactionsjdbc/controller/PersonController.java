@@ -33,9 +33,12 @@ public class PersonController {
         if (personObj != null) {
             personObj.setRole(person.getRole());
             personObj.setBalance(person.getBalance());
-
-            personRepository.updatePerson(personObj);
-            return new ResponseEntity<>("Person successfully updated.", HttpStatus.OK);
+            try{
+                personRepository.updatePerson(personObj);
+                return new ResponseEntity<>("Person successfully updated.", HttpStatus.OK);
+            }catch (Exception e){
+                return new ResponseEntity<>("Invalid SQL query: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }else {
             return new ResponseEntity<>("Person with id " + personID + " not found.", HttpStatus.NOT_FOUND);
         }
@@ -84,12 +87,12 @@ public class PersonController {
         try {
             int response = personRepository.deletePersonById(personID);
             if (response == 0){
-                return new ResponseEntity<>("No Person with id " + personID + " found.", HttpStatus.OK);
+                return new ResponseEntity<>("No Person with id " + personID + " found.", HttpStatus.NOT_FOUND);
             }else {
                 return new ResponseEntity<>("Person with id " + personID + " successfully removed.", HttpStatus.OK);
             }
         }catch (Exception e){
-            return new ResponseEntity<>("Something went wrong. Cannot delete Person.", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Something went wrong. Cannot delete Person. " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -103,7 +106,7 @@ public class PersonController {
                 return new ResponseEntity<>(response + " Persons deleted.", HttpStatus.OK);
             }
         }catch (Exception e){
-            return new ResponseEntity<>("Something went wrong. Cannot delete Persons.", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Something went wrong. Cannot delete Persons. " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
