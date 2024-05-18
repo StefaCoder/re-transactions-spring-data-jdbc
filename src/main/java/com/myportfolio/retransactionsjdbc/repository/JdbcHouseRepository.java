@@ -27,7 +27,7 @@ public class JdbcHouseRepository implements HouseRepository{
 
             return jdbcTemplate.update(sql, house.getHouse_address(), house.getHouse_price(), house.getSeller_id());
         }catch (DataAccessException dae){
-            return 0;
+            throw dae;
         }
 
     }
@@ -49,13 +49,14 @@ public class JdbcHouseRepository implements HouseRepository{
             String sql = "SELECT * FROM House WHERE house_id=?";
 
             if(houseID <= 0){
-                throw new IllegalArgumentException("House id cannot be 0 or a negative number.");
+                System.out.println("House Id cannot be 0 or a negative value.");
+                throw new IllegalArgumentException();
             }
 
             return jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(House.class), houseID);
         }catch (DataAccessException dae){
-            System.out.println("House ID not found. " + dae.getMessage());
-            return null;
+            System.out.println("An error has occurred. " + dae.getMessage());
+            throw dae;
         }
     }
 
@@ -64,9 +65,6 @@ public class JdbcHouseRepository implements HouseRepository{
         try {
             String sql = "SELECT * FROM House WHERE house_address=?";
 
-            if (houseAddress.length() == 0) {
-                throw new IllegalArgumentException("Address cannot be blank");
-            }
             return jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(House.class), houseAddress);
         }catch (DataAccessException dae){
             System.out.println("Cannot find house with address " + houseAddress + ". " + dae.getMessage());
@@ -85,7 +83,7 @@ public class JdbcHouseRepository implements HouseRepository{
             return jdbcTemplate.update(sql, houseID);
         }catch (DataAccessException dae){
             System.out.println("Cannot delete house with id " + houseID + ". " + dae.getMessage());
-            return 0;
+            throw dae;
         }
     }
 
@@ -97,7 +95,7 @@ public class JdbcHouseRepository implements HouseRepository{
             return jdbcTemplate.update(sql);
         }catch (DataAccessException dae){
             System.out.println("Something went wrong. Cannot delete houses. " + dae.getMessage());
-            return 0;
+            throw dae;
         }
     }
 }

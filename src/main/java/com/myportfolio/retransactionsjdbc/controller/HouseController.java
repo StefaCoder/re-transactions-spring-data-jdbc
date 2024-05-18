@@ -20,7 +20,7 @@ public class HouseController {
             houseRepository.saveHouse(new House(house.getHouse_address(), house.getHouse_price(), house.getSeller_id()));
             return new ResponseEntity<>("House successfully created.", HttpStatus.CREATED);
         }catch (Exception e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("An error has occurred while saving the House. " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -32,9 +32,12 @@ public class HouseController {
             houseObj.setHouse_address(house.getHouse_address());
             houseObj.setHouse_price(house.getHouse_price());
             houseObj.setSeller_id(house.getSeller_id());
-
-            houseRepository.updateHouse(houseObj);
-            return new ResponseEntity<>("House successfully updated.", HttpStatus.OK);
+            try {
+                houseRepository.updateHouse(houseObj);
+                return new ResponseEntity<>("House successfully updated.", HttpStatus.OK);
+            }catch (Exception e){
+                return new ResponseEntity<>("Something went wrong. " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }else {
             return new ResponseEntity<>("House with id " + houseID + " not found.", HttpStatus.NOT_FOUND);
         }
@@ -42,13 +45,18 @@ public class HouseController {
 
     @GetMapping("/house/{id}")
     public ResponseEntity<House> getHouseById(@PathVariable("id") int houseID){
-        House houseObj = houseRepository.findHouseById(houseID);
+        try {
+            House houseObj = houseRepository.findHouseById(houseID);
 
-        if (houseObj == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }else {
-            return new ResponseEntity<>(houseObj, HttpStatus.OK);
+            if (houseObj == null){
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }else {
+                return new ResponseEntity<>(houseObj, HttpStatus.OK);
+            }
+        }catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
     }
 
     @GetMapping("/house/address/{address}")
@@ -72,7 +80,7 @@ public class HouseController {
                 return new ResponseEntity<>("House with id " + houseID + " successfully removed.", HttpStatus.OK);
             }
         }catch (Exception e){
-            return new ResponseEntity<>("Something went wrong. Cannot delete House.", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Something went wrong. Cannot delete House. " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -86,7 +94,7 @@ public class HouseController {
                 return new ResponseEntity<>(response + " Houses deleted.", HttpStatus.OK);
             }
         }catch (Exception e){
-            return new ResponseEntity<>("Something went wrong. Cannot delete Houses.", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Something went wrong. Cannot delete Houses. " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
