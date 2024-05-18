@@ -36,8 +36,8 @@ public class TransactionsController {
             transactionsRepository.saveTransaction(new Transactions(transactions.getHouse_id(), transactions.getBuyer_id(), transactions.getSeller_id(), transactions.getTransaction_date(), transactions.getTransaction_amount()));
             return new ResponseEntity<>("Transaction successfully created.", HttpStatus.CREATED);
         }catch (Exception e){
-            System.out.println("Something went wrong while creating a transactions. " + e.getMessage());
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>("Something went wrong while creating a transactions. " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -134,8 +134,8 @@ public class TransactionsController {
                 return new ResponseEntity<>("Transaction with id " + transactionID + " successfully deleted.", HttpStatus.OK);
             }
         }catch (Exception e){
-            System.out.println("Something went wrong while deleting transactions by id." + e.getMessage());
-            return new ResponseEntity<>("Error while deleting transaction.", HttpStatus.INTERNAL_SERVER_ERROR);
+            System.out.println("Something went wrong while deleting transactions by id. " + e.getMessage());
+            return new ResponseEntity<>("Error while deleting transaction. " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -151,7 +151,7 @@ public class TransactionsController {
             return new ResponseEntity<>("Ownership successfully transferred.", HttpStatus.CREATED);
         }catch (Exception e){
             System.out.println("Something went wrong while transferring ownership. " + e.getMessage());
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Something went wrong while transferring ownership. " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

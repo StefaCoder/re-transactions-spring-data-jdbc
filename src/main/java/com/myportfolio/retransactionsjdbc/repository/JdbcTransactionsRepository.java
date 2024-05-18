@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -52,7 +51,7 @@ public class JdbcTransactionsRepository implements TransactionsRepository{
 
             return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Transactions.class));
         }catch (DataAccessException dae){
-            return Collections.emptyList();
+            throw dae;
         }
     }
 
@@ -81,7 +80,7 @@ public class JdbcTransactionsRepository implements TransactionsRepository{
 
             return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Transactions.class), houseID);
         }catch (DataAccessException dae){
-            return Collections.emptyList();
+            throw dae;
         }
     }
 
@@ -96,7 +95,7 @@ public class JdbcTransactionsRepository implements TransactionsRepository{
 
             return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Transactions.class), buyerID);
         }catch (DataAccessException dae){
-            return Collections.emptyList();
+            throw dae;
         }
     }
 
@@ -111,7 +110,7 @@ public class JdbcTransactionsRepository implements TransactionsRepository{
 
             return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Transactions.class), sellerID);
         }catch (DataAccessException dae){
-            return Collections.emptyList();
+            throw dae;
         }
     }
 
@@ -122,7 +121,7 @@ public class JdbcTransactionsRepository implements TransactionsRepository{
 
             return jdbcTemplate.update(sql, transactionID);
         }catch (DataAccessException dae){
-            return 0;
+            throw dae;
         }
     }
 
